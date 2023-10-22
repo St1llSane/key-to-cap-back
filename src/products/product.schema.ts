@@ -1,5 +1,5 @@
 import { EntitySchema } from 'typeorm';
-import { ProductEntity } from './product.entity';
+import { ProductEntity } from './entities/product.entity';
 
 export const ProductSchema = new EntitySchema<ProductEntity>({
   name: 'Product',
@@ -10,7 +10,7 @@ export const ProductSchema = new EntitySchema<ProductEntity>({
       primary: true,
       generated: true,
     },
-    productName: {
+    name: {
       type: String,
     },
     category: {
@@ -26,7 +26,7 @@ export const ProductSchema = new EntitySchema<ProductEntity>({
   relations: {
     category: {
       type: 'many-to-one',
-      target: 'Category'
-    }
-  }
+      target: 'Category',
+    },
+  },
 });

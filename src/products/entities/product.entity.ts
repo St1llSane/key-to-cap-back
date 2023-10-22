@@ -7,10 +7,7 @@ export class ProductEntity {
   id: number;
 
   @Column()
-  productName: string;
-
-  @Column()
-  category: string;
+  name: string;
 
   @Column()
   descriprion: string;
@@ -18,6 +15,6 @@ export class ProductEntity {
   @Column()
   price: number;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.products)
-  products: ProductEntity;
+  @ManyToOne(() => CategoryEntity, (category) => category.id)
+  category: CategoryEntity;
 }

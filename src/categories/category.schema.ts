@@ -1,5 +1,5 @@
 import { EntitySchema } from 'typeorm';
-import { CategoryEntity } from './category.entity';
+import { CategoryEntity } from './entities/category.entity';
 
 export const CategorySchema = new EntitySchema<CategoryEntity>({
   name: 'Category',
@@ -10,14 +10,8 @@ export const CategorySchema = new EntitySchema<CategoryEntity>({
       primary: true,
       generated: true,
     },
-    categoryName: {
+    name: {
       type: String,
-    },
-  },
-  relations: {
-    products: {
-      type: 'one-to-many',
-      target: 'Product',
     },
   },
 });
