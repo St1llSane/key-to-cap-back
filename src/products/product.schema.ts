@@ -13,20 +13,20 @@ export const ProductSchema = new EntitySchema<ProductEntity>({
     name: {
       type: String,
     },
-    category: {
-      type: String,
-    },
     descriprion: {
       type: String,
     },
     price: {
       type: Number,
     },
-  },
-  relations: {
-    category: {
-      type: 'many-to-one',
-      target: 'Category',
+    categoryId: {
+      type: Number,
     },
   },
+  // relations: {
+  //   category: {
+  //     type: 'many-to-one',
+  //     target: 'Category',
+  //   },
+  // },
 });

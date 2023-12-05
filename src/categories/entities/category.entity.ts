@@ -8,4 +8,7 @@ export class CategoryEntity {
 
   @Column()
   name: string;
+
+  @OneToMany(() => ProductEntity, (product) => product.id)
+  product: ProductEntity;
 }
