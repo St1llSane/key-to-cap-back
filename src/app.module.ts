@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CategoriesModule } from './categories/categories.module';
-import { ProductsModule } from './products/products.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryEntity } from './categories/entities/category.entity';
 import { ConfigModule } from '@nestjs/config';
 import { ProductEntity } from './products/entities/product.entity';
 import { DataSource } from 'typeorm';
+import { CategoriesModule } from './categories/categories.module';
+import { ProductsModule } from './products/products.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DataSource } from 'typeorm';
     }),
     CategoriesModule,
     ProductsModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
