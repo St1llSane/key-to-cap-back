@@ -1,5 +1,5 @@
 import { EntitySchema } from 'typeorm';
-import { ProductEntity } from './entities/product.entity';
+import { ProductEntity } from './product.entity';
 
 export const ProductSchema = new EntitySchema<ProductEntity>({
   name: 'Product',
