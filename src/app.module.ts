@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CategoryEntity } from './categories/entities/category.entity';
+import { CategoryEntity } from './category/entities/category.entity';
 import { ConfigModule } from '@nestjs/config';
-import { ProductEntity } from './products/entities/product.entity';
+import { ProductEntity } from './product/entities/product.entity';
 import { DataSource } from 'typeorm';
-import { CategoriesModule } from './categories/categories.module';
-import { ProductsModule } from './products/products.module';
+import { CategoriesModule } from './category/category.module';
+import { ProductsModule } from './product/product.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -28,8 +26,6 @@ import { UserModule } from './user/user.module';
     ProductsModule,
     UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
