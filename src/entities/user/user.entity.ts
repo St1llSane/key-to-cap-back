@@ -1,10 +1,15 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserGender } from './types';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ name: 'email', type: 'varchar' })
   email: string;
@@ -24,9 +29,12 @@ export class User {
   @Column({ name: 'gender', type: 'enum', enum: UserGender, nullable: true })
   gender: UserGender | null;
 
-  @Column({ name: 'created_at', type: 'timestamp' })
-  createdAt: Date;
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  isActive: boolean;
 
   @Column({ name: 'is_cookie_accepted', type: 'boolean', default: false })
   isCookieAccepted: boolean;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  createdAt: Date;
 }
