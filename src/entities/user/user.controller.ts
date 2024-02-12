@@ -26,13 +26,6 @@ export class UserController {
   async getUserById(@Param() { id }: { id: string }) {
     const userInfo = await this.userService.getUserById(id);
 
-    if (!userInfo.data.isActive) {
-      return {
-        status: 'rejected',
-        data: { message: 'User with this id does not exist' },
-      };
-    }
-
     return userInfo;
   }
 

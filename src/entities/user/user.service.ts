@@ -14,6 +14,7 @@ export class UserService {
 
   public async getUsers() {
     const users = await this.UserRepository.find({
+      where: { isActive: true },
       select: [
         'id',
         'email',
@@ -25,7 +26,7 @@ export class UserService {
       ],
     });
 
-    return { status: 'ok', data: users };
+    return { status: 'OK', data: users };
   }
 
   public async getUserById(id: string) {
@@ -42,7 +43,14 @@ export class UserService {
       ],
     });
 
-    return { status: 'ok', data: user };
+    if (!user.isActive) {
+      return {
+        status: 'REJECTED',
+        data: { message: 'User with this id does not exist' },
+      };
+    }
+
+    return { status: 'OK', data: user };
   }
 
   public async createUser(body: CreateUserDto) {
@@ -52,7 +60,7 @@ export class UserService {
 
     if (isUserWithThisEmailAlreadyExist) {
       return {
-        status: 'rejected',
+        status: 'REJECTED',
         message: 'User with this email is already exist',
       };
     }
@@ -76,7 +84,7 @@ export class UserService {
       createdAt: newUser.createdAt,
     };
 
-    return { status: 'created', data: userInfoToReturn };
+    return { status: 'CREATED', data: userInfoToReturn };
   }
 
   public async updateUser(id: string, body: UpdateUserDto) {
@@ -90,7 +98,7 @@ export class UserService {
       },
     );
 
-    return { status: 'updated' };
+    return { status: 'UPDATED' };
   }
 
   public async deleteUser(id: string) {
@@ -101,6 +109,6 @@ export class UserService {
       },
     );
 
-    return { status: 'deleted' };
+    return { status: 'DELETED' };
   }
 }
