@@ -6,9 +6,7 @@ import {
   Param,
   Post,
   Put,
-  Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { CreateUserDto } from './dto/createUser.dto';
@@ -18,49 +16,47 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/')
-  async getAllUsers(@Res() res: Response) {
-    const users = await this.userService.getUsers();
+  async getAllUsers() {
+    const usersInfo = await this.userService.getUsers();
 
-    return res.send({ status: 'OK', data: users });
+    return usersInfo;
   }
 
   @Get(':id')
-  async getUserById(@Param() { id }: { id: string }, @Res() res: Response) {
-    const user = await this.userService.getUserById(id);
+  async getUserById(@Param() { id }: { id: string }) {
+    const userInfo = await this.userService.getUserById(id);
 
-    if (!user.isActive) {
-      return res.send({
-        status: 'FAIL',
-        data: { message: 'This user does not exist' },
-      });
+    if (!userInfo.data.isActive) {
+      return {
+        status: 'rejected',
+        data: { message: 'User with this id does not exist' },
+      };
     }
 
-    return res.send({ status: 'OK', data: user });
+    return userInfo;
   }
 
   @Post('/')
-  async createUser(@Body() body: CreateUserDto, @Res() res: Response) {
-    const newUser = await this.userService.createUser(body);
+  async createUser(@Body() body: CreateUserDto) {
+    const newUserInfo = await this.userService.createUser(body);
 
-    // TODO need to think how to make it's clear if user is not exist
-    return res.send({ status: 'OK', data: newUser });
+    return newUserInfo;
   }
 
   @Put(':id')
   async updateUserById(
     @Param() { id }: { id: string },
     @Body() body: UpdateUserDto,
-    @Res() res: Response,
   ) {
-    await this.userService.updateUser(id, body);
+    const updatedUserInfo = await this.userService.updateUser(id, body);
 
-    return res.send({ status: 'OK' });
+    return updatedUserInfo;
   }
 
   @Delete(':id')
-  async deleteUserById(@Param() { id }: { id: string }, @Res() res: Response) {
-    await this.userService.deleteUser(id);
+  async deleteUserById(@Param() { id }: { id: string }) {
+    const deletedUserInfo = await this.userService.deleteUser(id);
 
-    return res.send({ status: 'OK' });
+    return deletedUserInfo;
   }
 }

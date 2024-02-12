@@ -13,31 +13,49 @@ export class UserService {
   ) {}
 
   public async getUsers() {
-    const users = await this.UserRepository.find({ select: ['id', 'email'] });
+    const users = await this.UserRepository.find({
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'lastName',
+        'gender',
+        'birthDate',
+        'createdAt',
+      ],
+    });
 
-    return users;
+    return { status: 'ok', data: users };
   }
 
   public async getUserById(id: string) {
     const user = await this.UserRepository.findOne({
       where: { id },
-      select: ['id', 'email', 'isActive'],
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'lastName',
+        'gender',
+        'birthDate',
+        'createdAt',
+      ],
     });
 
-    return user;
+    return { status: 'ok', data: user };
   }
 
   public async createUser(body: CreateUserDto) {
-    // const isUserWithThisEmailAlreadyExist = await this.UserRepository.exist({
-    //   where: { email: body.email },
-    // });
+    const isUserWithThisEmailAlreadyExist = await this.UserRepository.exist({
+      where: { email: body.email },
+    });
 
-    // // TODO need to think how to make it's clear if user is not exist
-    // if (isUserWithThisEmailAlreadyExist) {
-    //   return {
-    //     message: 'User with this email is already exist',
-    //   };
-    // }
+    if (isUserWithThisEmailAlreadyExist) {
+      return {
+        status: 'rejected',
+        message: 'User with this email is already exist',
+      };
+    }
 
     const salt = await genSalt(10);
     const hashedPassword = await hash(body.password, salt);
@@ -58,47 +76,31 @@ export class UserService {
       createdAt: newUser.createdAt,
     };
 
-    return userInfoToReturn;
+    return { status: 'created', data: userInfoToReturn };
   }
 
   public async updateUser(id: string, body: UpdateUserDto) {
-    // const user: { password: string } = await this.UserRepository.findOne({
-    //   where: { id },
-    //   select: ['password'],
-    // });
-
-    // const isPasswordsMatch = await compare(
-    //   updatedUserData.password,
-    //   user.password,
-    // );
-    // console.log(updatedUserData);
-    // console.log(user);
-    // console.log(isPasswordsMatch);
-
-    // if (updatedUserData.password && !isPasswordsMatch) {
-    //   const salt = await genSalt(10);
-    //   const newHashedPassword = await hash(userData.password, salt);
-
-    // }
-
-    return await this.UserRepository.update(
+    await this.UserRepository.update(
       { id },
       {
-        email: body.email,
         firstName: body.firstName,
         lastName: body.lastName,
         gender: body.gender,
         birthDate: body.birthDate,
       },
     );
+
+    return { status: 'updated' };
   }
 
   public async deleteUser(id: string) {
-    return await this.UserRepository.update(
+    await this.UserRepository.update(
       { id },
       {
         isActive: false,
       },
     );
+
+    return { status: 'deleted' };
   }
 }
