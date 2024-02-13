@@ -28,8 +28,8 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
+  findUser(@Param('id') id: string) {
+    return this.categoriesService.findUser(+id);
   }
 
   // @Patch(':id')

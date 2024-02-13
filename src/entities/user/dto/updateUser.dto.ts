@@ -5,7 +5,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { UserGender } from '../types';
+import { UserGender } from '../types/types';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {

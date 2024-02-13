@@ -12,7 +12,7 @@ export class ProductsService {
     return `This action returns all products`;
   }
 
-  findOne(id: number) {
+  findUser(id: number) {
     return `This action returns a #${id} product`;
   }
 

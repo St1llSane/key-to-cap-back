@@ -4,7 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserGender } from './types';
+import { UserGender } from './types/types';
 
 @Entity('users')
 export class User {

@@ -20,7 +20,7 @@ export class CategoriesService {
     return `This action returns all categories`;
   }
 
-  findOne(id: number) {
+  findUser(id: number) {
     return `This action returns a #${id} category`;
   }
 
