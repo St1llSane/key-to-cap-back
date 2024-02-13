@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { genSalt, hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { CreateUserDto } from './dto/createUser.dto';
+import { UniqueEmailConflictError } from '@errors/UniqueEmailConflictError';
 
 @Injectable()
 export class UserService {
@@ -59,10 +60,7 @@ export class UserService {
     });
 
     if (isUserWithThisEmailAlreadyExist) {
-      return {
-        status: 'REJECTED',
-        message: 'User with this email is already exist',
-      };
+      throw new UniqueEmailConflictError();
     }
 
     const salt = await genSalt(10);
