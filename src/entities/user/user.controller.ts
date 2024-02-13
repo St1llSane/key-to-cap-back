@@ -10,12 +10,15 @@ import {
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { CreateUserDto } from './dto/createUser.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('/')
+  @Get()
+  @ApiOperation({ summary: 'Gel all users' })
   async getAllUsers() {
     const usersInfo = await this.userService.getUsers();
 
@@ -23,13 +26,15 @@ export class UserController {
   }
 
   @Get(':id')
-  async getUserById(@Param() { id }: { id: string }) {
+  @ApiOperation({ summary: 'Gel user by id' })
+  async getUserById(@Param('id') id: string) {
     const userInfo = await this.userService.getUserById(id);
 
     return userInfo;
   }
 
-  @Post('/')
+  @Post()
+  @ApiOperation({ summary: 'Create user' })
   async createUser(@Body() body: CreateUserDto) {
     const newUserInfo = await this.userService.createUser(body);
 
@@ -37,19 +42,25 @@ export class UserController {
   }
 
   @Put(':id')
-  async updateUserById(
-    @Param() { id }: { id: string },
-    @Body() body: UpdateUserDto,
-  ) {
+  @ApiOperation({ summary: 'Update user' })
+  async updateUserById(@Param('id') id: string, @Body() body: UpdateUserDto) {
     const updatedUserInfo = await this.userService.updateUser(id, body);
 
     return updatedUserInfo;
   }
 
   @Delete(':id')
-  async deleteUserById(@Param() { id }: { id: string }) {
+  @ApiOperation({ summary: 'Delete user by id' })
+  async deleteUserById(@Param('id') id: string) {
     const deletedUserInfo = await this.userService.deleteUser(id);
 
     return deletedUserInfo;
   }
+
+  // @Get(':email')
+  // async authUser(@Param() { id }: { id: string }) {
+  //   const authUserInfo = await this.userService.deleteUser(id);
+
+  //   return authUserInfo;
+  // }
 }
