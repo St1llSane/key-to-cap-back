@@ -1,18 +1,21 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('products')
-export class ProductEntity {
+export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ name: 'name', type: 'varchar' })
   name: string;
 
-  @Column({ name: 'descriprion', type: 'varchar' })
-  descriprion: string;
+  @Column({ name: 'description', type: 'varchar', nullable: true })
+  description: string;
 
   @Column({ name: 'price', type: 'numeric' })
   price: number;
+
+  @Column({ name: 'quantity', type: 'int', default: 1 })
+  quantity: number;
 
   @Column({ name: 'category_id', type: 'int' })
   categoryId: number;

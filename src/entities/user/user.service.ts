@@ -114,6 +114,14 @@ export class UserService {
   }
 
   public async updateUser(id: string, body: UpdateUserDto) {
+    const isUserExist = await this.userRepository.exist({
+      where: { id },
+    });
+
+    if (!isUserExist) {
+      throw new NotFoundError('User with this id was not found');
+    }
+
     await this.userRepository.update(
       { id },
       {

@@ -1,9 +1,9 @@
 import { EntitySchema } from 'typeorm';
-import { ProductEntity } from './product.entity';
+import { Product } from './product.entity';
 
-export const ProductSchema = new EntitySchema<ProductEntity>({
+export const ProductSchema = new EntitySchema<Product>({
   name: 'Product',
-  target: ProductEntity,
+  target: Product,
   columns: {
     id: {
       type: Number,
@@ -13,7 +13,7 @@ export const ProductSchema = new EntitySchema<ProductEntity>({
     name: {
       type: String,
     },
-    descriprion: {
+    description: {
       type: String,
     },
     price: {

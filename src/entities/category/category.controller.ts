@@ -3,7 +3,7 @@ import {
   Get,
   // Post,
   // Body,
-  // Patch,
+  // Put,
   Param,
   Delete,
   ParseIntPipe,
@@ -37,7 +37,7 @@ export class CategoriesController {
   //   return this.categoriesService.create(createCategoryDto);
   // }
 
-  // @Patch(':id')
+  // @Put(':id')
   // update(
   //   @Param('id') id: string,
   //   @Body() updateCategoryDto: UpdateCategoryDto,

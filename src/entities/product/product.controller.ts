@@ -1,44 +1,58 @@
 import {
   Controller,
   Get,
-  // Post,
-  // Body,
-  // Patch,
+  Post,
+  Body,
+  Put,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
-// import { CreateProductDto } from './dto/create-product.dto';
-// import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateProductDto } from './dto/createProductDto';
+import { UpdateProductDto } from './dto/updateProductDto';
 
 @Controller('products')
 @ApiTags('products')
-export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
-
-  // @Post()
-  // create(@Body() createProductDto: CreateProductDto) {
-  //   return this.productsService.create(createProductDto);
-  // }
+export class ProductController {
+  constructor(private readonly productService: ProductService) {}
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  async getAllProducts() {
+    const products = await this.productService.getAllProducts();
+
+    return products;
   }
 
   @Get(':id')
-  findUser(@Param('id') id: string) {
-    return this.productsService.findUser(+id);
+  async getProduct(@Param('id', ParseIntPipe) id: number) {
+    const product = await this.productService.getProduct(id);
+
+    return product;
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-  //   return this.productsService.update(+id, updateProductDto);
-  // }
+  @Post()
+  async createProduct(@Body() body: CreateProductDto) {
+    const newProduct = await this.productService.createProduct(body);
+
+    return newProduct;
+  }
+
+  @Put(':id')
+  async updateProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateProductDto,
+  ) {
+    const updatedProduct = await this.productService.updateProduct(id, body);
+
+    return updatedProduct;
+  }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  async deleteProduct(@Param('id', ParseIntPipe) id: number) {
+    const deletedProduct = await this.productService.deleteProduct(id);
+
+    return deletedProduct;
   }
 }
