@@ -6,6 +6,7 @@ import {
   // Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './category.service';
 // import { CreateCategoryDto } from './dto/create-category.dto';
@@ -17,20 +18,24 @@ import { ApiTags } from '@nestjs/swagger';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @Get()
+  async getAllCategories() {
+    const categories = await this.categoriesService.getAllCategories();
+
+    return categories;
+  }
+
+  @Get(':id')
+  async getCategory(@Param('id', ParseIntPipe) id: number) {
+    const category = await this.categoriesService.getCategory(id);
+
+    return category;
+  }
+
   // @Post()
   // create(@Body() createCategoryDto: CreateCategoryDto) {
   //   return this.categoriesService.create(createCategoryDto);
   // }
-
-  @Get()
-  findAll() {
-    return this.categoriesService.findAll();
-  }
-
-  @Get(':id')
-  findUser(@Param('id') id: string) {
-    return this.categoriesService.findUser(+id);
-  }
 
   // @Patch(':id')
   // update(
@@ -41,7 +46,7 @@ export class CategoriesController {
   // }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+  async deleteCategory(@Param('id', ParseIntPipe) id: number) {
+    return await this.categoriesService.deleteCategory(id);
   }
 }

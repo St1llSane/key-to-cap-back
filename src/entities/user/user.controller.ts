@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -20,7 +20,7 @@ export class UserController {
   @Get()
   @ApiOperation({ summary: 'Gel all users' })
   async getAllUsers() {
-    const usersInfo = await this.userService.getUsers();
+    const usersInfo = await this.userService.getAllUsers();
 
     return usersInfo;
   }
@@ -41,7 +41,7 @@ export class UserController {
     return newUserInfo;
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update user' })
   async updateUserById(@Param('id') id: string, @Body() body: UpdateUserDto) {
     const updatedUserInfo = await this.userService.updateUser(id, body);

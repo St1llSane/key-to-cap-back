@@ -16,7 +16,7 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  public async getUsers() {
+  public async getAllUsers() {
     const users = await this.userRepository.find({
       where: { isActive: true },
       select: [
@@ -30,7 +30,7 @@ export class UserService {
       ],
     });
 
-    return { status: 'OK', data: users };
+    return { status: 'OK', users };
   }
 
   public async getUserById(id: string) {
@@ -73,7 +73,7 @@ export class UserService {
       acces_token,
     };
 
-    return { status: 'OK', data: userInfoToReturn, acces_token };
+    return { status: 'OK', user: userInfoToReturn, acces_token };
   }
 
   public async createUser(body: CreateUserDto) {
@@ -110,7 +110,7 @@ export class UserService {
       acces_token,
     };
 
-    return { status: 'CREATED', data: userInfoToReturn };
+    return { status: 'CREATED', user: userInfoToReturn };
   }
 
   public async updateUser(id: string, body: UpdateUserDto) {

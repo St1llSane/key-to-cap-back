@@ -5,16 +5,16 @@ export class ProductEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'name', type: 'varchar' })
   name: string;
 
-  @Column()
+  @Column({ name: 'descriprion', type: 'varchar' })
   descriprion: string;
 
-  @Column()
+  @Column({ name: 'price', type: 'numeric' })
   price: number;
 
-  @Column()
+  @Column({ name: 'category_id', type: 'int' })
   categoryId: number;
 
   // @ManyToOne(() => CategoryEntity, (category) => category.id)

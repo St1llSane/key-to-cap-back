@@ -12,23 +12,24 @@ export class CategoriesService {
     private categoriesRepository: Repository<CategoryEntity>,
   ) {}
 
-  // create(createCategoryDto: CreateCategoryDto) {
-  //   return 'This action adds a new category';
-  // }
+  public async getAllCategories() {
+    const categories = await this.categoriesRepository.find({
+      select: ['id', 'name'],
+    });
 
-  findAll() {
-    return `This action returns all categories`;
+    return categories;
   }
 
-  findUser(id: number) {
-    return `This action returns a #${id} category`;
+  public async getCategory(id: number) {
+    const category = await this.categoriesRepository.find({
+      where: { id },
+      select: ['id', 'name'],
+    });
+
+    return category;
   }
 
-  // update(id: number, updateCategoryDto: UpdateCategoryDto) {
-  //   return `This action updates a #${id} category`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  public async deleteCategory(id: number) {
+    return await this.categoriesRepository.delete(id);
   }
 }
