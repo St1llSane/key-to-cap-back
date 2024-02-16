@@ -13,12 +13,40 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  async getAllProducts() {
+  private readonly categories: { [k: number]: string } = {
+    1: 'keyboards',
+    2: 'mouses',
+    3: 'mouse pads',
+    4: 'keycaps',
+  };
+
+  async getAllProducts(limit?: number) {
     const products = await this.productRepository.find({
-      select: ['id', 'name', 'description', 'price', 'quantity'],
+      take: limit,
+      order: { id: { direction: 'asc' } },
+      select: ['id', 'name', 'description', 'price', 'quantity', 'categoryId'],
     });
 
-    return products;
+    const filteredProducts = products.reduce((acc, product) => {
+      if (!acc[product.categoryId]) {
+        acc[product.categoryId] = [];
+      }
+
+      acc[product.categoryId].push(product);
+
+      return acc;
+    }, {});
+
+    const filteredProductsWithCorrectCategoriesNames = Object.keys(
+      filteredProducts,
+    ).reduce((acc, key) => {
+      const newCategoryName = this.categories[key];
+      acc[newCategoryName] = filteredProducts[key];
+
+      return acc;
+    }, {});
+
+    return filteredProductsWithCorrectCategoriesNames;
   }
 
   async getProduct(id: number) {

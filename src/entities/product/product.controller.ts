@@ -7,9 +7,10 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/createProductDto';
 import { UpdateProductDto } from './dto/updateProductDto';
 
@@ -19,8 +20,14 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
-  async getAllProducts() {
-    const products = await this.productService.getAllProducts();
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Optional limit param',
+    required: false,
+  })
+  async getAllProducts(@Query('limit') limit?: number) {
+    const products = await this.productService.getAllProducts(limit);
 
     return products;
   }
