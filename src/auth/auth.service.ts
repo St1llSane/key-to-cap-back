@@ -22,12 +22,15 @@ export class AuthService {
     throw new NotFoundError();
   }
 
-  async login(user: any) {
+  getJwt({ user, expiresIn = '30s' }: { user: any; expiresIn?: string }) {
     const { id, email } = user;
 
-    return this.jwtService.sign({
-      id,
-      email,
-    });
+    return this.jwtService.sign(
+      {
+        id,
+        email,
+      },
+      { expiresIn },
+    );
   }
 }

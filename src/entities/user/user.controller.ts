@@ -46,7 +46,7 @@ export class UserController {
   // ) {
   //   console.log('🚀 ~ UserController ~ body:', body);
   //   const newUserInfo = await this.userService.createUser(body);
-  //   const access_token = await this.authService.login(body);
+  //   const access_token = await this.authService.getJwt(body);
 
   //   res.cookie('access_token', access_token, {
   //     // TODO: need to secure in the future
