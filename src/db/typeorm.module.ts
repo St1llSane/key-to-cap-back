@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule as NestTypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from '@entities/user/user.entity';
+import { Product } from '@entities/product/product.entity';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { User } from '@entities/user/user.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User],
+      entities: [User, Product],
       migrations: ['dist/db/migrations/**/*.js'],
       autoLoadEntities: true,
       synchronize: true,

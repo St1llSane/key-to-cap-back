@@ -14,10 +14,10 @@ export class ProductService {
   ) {}
 
   private readonly categories: { [k: number]: string } = {
-    1: 'keyboards',
-    2: 'mouses',
-    3: 'mouse pads',
-    4: 'keycaps',
+    1: 'Keyboards',
+    2: 'Mouses',
+    3: 'Mouse pads',
+    4: 'Keycaps',
   };
 
   async getAllProducts(limit?: number) {

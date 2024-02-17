@@ -6,11 +6,13 @@ import {
   Param,
   Put,
   Post,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -19,8 +21,13 @@ export class UserController {
 
   @Get()
   @ApiOperation({ summary: 'Gel all users' })
-  async getAllUsers() {
+  async getAllUsers(@Req() request: Request) {
     const usersInfo = await this.userService.getAllUsers();
+
+    console.log(
+      '🚀 ~ UserController ~ getAllUsers ~ request:',
+      request.cookies,
+    );
 
     return usersInfo;
   }
@@ -56,11 +63,4 @@ export class UserController {
 
     return deletedUserInfo;
   }
-
-  // @Get(':email')
-  // async authUser(@Param() { id }: { id: string }) {
-  //   const authUserInfo = await this.userService.deleteUser(id);
-
-  //   return authUserInfo;
-  // }
 }
