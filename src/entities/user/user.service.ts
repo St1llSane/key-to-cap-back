@@ -7,13 +7,11 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UniqueEmailConflictError } from '@errors/UniqueEmailConflictError';
 import { NotFoundError } from '@errors/NotFoundError';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService,
   ) {}
 
   public async getAllUsers() {
@@ -49,18 +47,8 @@ export class UserService {
     });
 
     if (!user || !user.isActive) {
-      // return {
-      //   status: 'REJECTED',
-      //   data: { message: 'User with this id was not found' },
-      // };
-
       throw new NotFoundError('User with this id was not found');
     }
-
-    const acces_token = this.jwtService.sign({
-      id: user.id,
-      email: user.email,
-    });
 
     const userInfoToReturn = {
       id: user.id,
@@ -70,10 +58,9 @@ export class UserService {
       gender: user.gender,
       birthDate: user.birthDate,
       createdAt: user.createdAt,
-      acces_token,
     };
 
-    return { status: 'OK', user: userInfoToReturn, acces_token };
+    return { status: 'OK', user: userInfoToReturn };
   }
 
   public async createUser(body: CreateUserDto) {
@@ -94,11 +81,6 @@ export class UserService {
     });
     await this.userRepository.save(newUser);
 
-    const acces_token = this.jwtService.sign({
-      id: newUser.id,
-      email: newUser.email,
-    });
-
     const userInfoToReturn = {
       id: newUser.id,
       email: newUser.email,
@@ -107,7 +89,6 @@ export class UserService {
       gender: newUser.gender,
       birthDate: newUser.birthDate,
       createdAt: newUser.createdAt,
-      acces_token,
     };
 
     return { status: 'CREATED', user: userInfoToReturn };
