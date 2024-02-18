@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   Res,
@@ -24,26 +25,22 @@ export class AuthController {
 
   private setTokensToCookie = (
     res: Response,
-    access_token?: string,
-    refresh_token?: string,
+    access_token: string,
+    refresh_token: string,
   ) => {
-    if (access_token) {
-      res.cookie('access_token', access_token, {
-        // TODO: need to secure in the future
-        secure: false,
-        httpOnly: true,
-        expires: new Date(Date.now() + 60 * 1000 * 15),
-      });
-    }
+    res.cookie('access_token', access_token, {
+      // TODO: need to secure in the future
+      secure: false,
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 1000 * 15),
+    });
 
-    if (refresh_token) {
-      res.cookie('refresh_token', refresh_token, {
-        // TODO: need to secure in the future
-        secure: false,
-        httpOnly: true,
-        expires: new Date(Date.now() + 604800),
-      });
-    }
+    res.cookie('refresh_token', refresh_token, {
+      // TODO: need to secure in the future
+      secure: false,
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 1000 * 60 * 24),
+    });
   };
 
   @Post('auth/register')
@@ -52,12 +49,8 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const newUserInfo = await this.userService.createUser(body);
-    const access_token = this.authService.getJwt({ user: body });
-    // TODO: i can use refresh token as acces token
-    const refresh_token = this.authService.getJwt({
-      user: body,
-      expiresIn: '7d',
-    });
+    const { access_token } = await this.authService.getJwt(body);
+    const { refresh_token } = await this.authService.getJwt(body);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
@@ -67,16 +60,21 @@ export class AuthController {
   @Post('auth/login')
   @UseGuards(LocalAuthGuard)
   async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
-    const access_token = this.authService.getJwt({ user: body });
-    // TODO: why refresh_token in login?
-    const refresh_token = this.authService.getJwt({
-      user: body,
-      expiresIn: '7d',
-    });
+    const { access_token } = await this.authService.getJwt(body);
+    // TODO: should automatically login if user has an acces or refresh token
+    const { refresh_token } = await this.authService.getJwt(body);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
-    return refresh_token;
+    return { access_token, refresh_token };
+  }
+
+  @Get('profile/:id')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@Param('id') id: string) {
+    const user = this.userService.findUserByEmail(id);
+
+    return user;
   }
 
   @Post('refresh')
@@ -85,17 +83,12 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // TODO: i can use refresh token as acces token
-    const access_token = this.authService.getJwt({ user: req.user });
+    const { access_token, refresh_token } = await this.authService.getJwt(
+      req.user,
+    );
 
-    this.setTokensToCookie(res, access_token);
+    this.setTokensToCookie(res, access_token, refresh_token);
 
-    return access_token;
-  }
-
-  @Get('profile')
-  @UseGuards(JwtAuthGuard)
-  getProfile(@Req() req: Request) {
-    return req.user;
+    return { access_token, refresh_token };
   }
 }

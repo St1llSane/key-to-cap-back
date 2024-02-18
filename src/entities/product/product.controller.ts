@@ -8,11 +8,14 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/createProductDto';
 import { UpdateProductDto } from './dto/updateProductDto';
+import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 
 @Controller('products')
 @ApiTags('products')
@@ -26,7 +29,9 @@ export class ProductController {
     description: 'Optional limit param',
     required: false,
   })
-  async getAllProducts(@Query('limit') limit?: number) {
+  @UseGuards(JwtAuthGuard)
+  async getAllProducts(@Req() req: Request, @Query('limit') limit?: number) {
+    console.log('🚀 ~ ProductController ~ getAllProducts ~ req:', req.headers);
     const products = await this.productService.getAllProducts(limit);
 
     return products;

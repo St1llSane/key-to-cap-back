@@ -128,7 +128,7 @@ export class UserService {
   }
 
   // TODO: need to delete in the future
-  async findUser(email: string) {
+  async findUserByEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {

@@ -12,10 +12,10 @@ export class RefreshJwtStrategy extends PassportStrategy(
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         RefreshJwtStrategy.extractJWT,
-        ExtractJwt.fromBodyField('refresh_token'),
+        // ExtractJwt.fromHeader('Cookie'),
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: process.env.REFRESH_JWT_SECRET,
     });
   }
 
