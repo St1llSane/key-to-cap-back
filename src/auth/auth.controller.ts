@@ -32,14 +32,16 @@ export class AuthController {
       // TODO: need to secure in the future
       secure: false,
       httpOnly: true,
-      expires: new Date(Date.now() + 60 * 1000 * 15),
+      expires: new Date(Date.now() + 15 * 1000),
+      maxAge: 15 * 1000,
     });
 
     res.cookie('refresh_token', refresh_token, {
       // TODO: need to secure in the future
       secure: false,
       httpOnly: true,
-      expires: new Date(Date.now() + 60 * 1000 * 60 * 24),
+      expires: new Date(Date.now() + 60 * 1000 * 15),
+      maxAge: 60 * 1000 * 15,
     });
   };
 
@@ -49,24 +51,24 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const newUserInfo = await this.userService.createUser(body);
-    const { access_token } = await this.authService.getJwt(body);
-    const { refresh_token } = await this.authService.getJwt(body);
+    const { access_token, refresh_token, accessTokenExpireTime } =
+      await this.authService.getJwt(body);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
-    return { newUserInfo, access_token, refresh_token };
+    return { newUserInfo, access_token, refresh_token, accessTokenExpireTime };
   }
 
   @Post('auth/login')
   @UseGuards(LocalAuthGuard)
   async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
-    const { access_token } = await this.authService.getJwt(body);
+    const { access_token, refresh_token, accessTokenExpireTime } =
+      await this.authService.getJwt(body);
     // TODO: should automatically login if user has an acces or refresh token
-    const { refresh_token } = await this.authService.getJwt(body);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
-    return { access_token, refresh_token };
+    return { access_token, refresh_token, accessTokenExpireTime };
   }
 
   @Get('profile/:id')
@@ -83,12 +85,11 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { access_token, refresh_token } = await this.authService.getJwt(
-      req.user,
-    );
+    const { access_token, refresh_token, accessTokenExpireTime } =
+      await this.authService.getJwt(req.user);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
-    return { access_token, refresh_token };
+    return { access_token, refresh_token, accessTokenExpireTime };
   }
 }

@@ -5,6 +5,7 @@ import { ProductController } from './product.controller';
 import { Product } from './product.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtStrategy } from '@auth/strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -13,13 +14,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('ACCESS_JWT_SECRET'),
-        signOptions: { expiresIn: '15m' },
+        // signOptions: { expiresIn: '15s' },
       }),
       inject: [ConfigService],
     }),
   ],
   controllers: [ProductController],
-  providers: [ProductService],
+  providers: [ProductService, JwtStrategy],
   exports: [ProductService],
 })
 export class ProductModule {}

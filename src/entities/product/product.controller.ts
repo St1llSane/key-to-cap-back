@@ -9,7 +9,6 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -30,8 +29,7 @@ export class ProductController {
     required: false,
   })
   @UseGuards(JwtAuthGuard)
-  async getAllProducts(@Req() req: Request, @Query('limit') limit?: number) {
-    console.log('🚀 ~ ProductController ~ getAllProducts ~ req:', req.headers);
+  async getAllProducts(@Query('limit') limit?: number) {
     const products = await this.productService.getAllProducts(limit);
 
     return products;

@@ -4,6 +4,9 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
 
+const ACCESS_TOKEN_EXPIRE_TIME = 15;
+const REFRESH_TOKEN_EXPIRE_TIME = 60 * 60 * 24;
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -31,35 +34,23 @@ export class AuthService {
           id,
           email,
         },
-        { expiresIn: '15m', secret: process.env.ACCESS_JWT_SECRET },
+        {
+          secret: process.env.ACCESS_JWT_SECRET,
+          expiresIn: ACCESS_TOKEN_EXPIRE_TIME,
+        },
       ),
       refresh_token: await this.jwtService.signAsync(
         {
           id,
           email,
         },
-        { expiresIn: '1d', secret: process.env.REFRESH_JWT_SECRET },
-      ),
-    };
-  }
-
-  async getRefreshJwt(user: any) {
-    const { id, email } = user;
-
-    return {
-      access_token: await this.jwtService.signAsync(
         {
-          id,
-          email,
+          secret: process.env.REFRESH_JWT_SECRET,
+          expiresIn: REFRESH_TOKEN_EXPIRE_TIME,
         },
-        { expiresIn: '15m', secret: process.env.ACCESS_JWT_SECRET },
       ),
-      refresh_token: await this.jwtService.signAsync(
-        {
-          id,
-          email,
-        },
-        { expiresIn: '1d', secret: process.env.REFRESH_JWT_SECRET },
+      accessTokenExpireTime: new Date().setTime(
+        new Date().getTime() + ACCESS_TOKEN_EXPIRE_TIME * 1000,
       ),
     };
   }

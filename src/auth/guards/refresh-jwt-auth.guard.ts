@@ -5,23 +5,22 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
 
 @Injectable()
 export class RefreshJwtAuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
-  private extractTokenFromHeaders = (req: Request) => {
-    const [type, token] = req.headers.authorization
-      ? req.headers.authorization.split(' ')
-      : [];
+  // private extractTokenFromHeaders = (req: Request) => {
+  //   const [type, token] = req.headers.authorization
+  //     ? req.headers.authorization.split(' ')
+  //     : [];
 
-    return type === 'Refresh' ? token : null;
-  };
+  //   return type === 'Refresh' ? token : null;
+  // };
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeaders(req);
+    const token = req.cookies.refresh_token;
 
     if (!token) throw new UnauthorizedException();
 
