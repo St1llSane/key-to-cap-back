@@ -22,4 +22,4 @@ import { Product } from '@entities/product/product.entity';
     }),
   ],
 })
-export class TypeOrmModule {}
+export class MyTypeOrmModule {}

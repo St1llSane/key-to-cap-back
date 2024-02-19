@@ -51,24 +51,28 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const newUserInfo = await this.userService.createUser(body);
-    const { access_token, refresh_token, accessTokenExpireTime } =
+    const { access_token, refresh_token, access_token_expire_time } =
       await this.authService.getJwt(body);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
-    return { newUserInfo, access_token, refresh_token, accessTokenExpireTime };
+    return {
+      newUserInfo,
+      access_token,
+      refresh_token,
+      access_token_expire_time,
+    };
   }
 
   @Post('auth/login')
   @UseGuards(LocalAuthGuard)
   async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
-    const { access_token, refresh_token, accessTokenExpireTime } =
+    const { access_token, refresh_token, access_token_expire_time } =
       await this.authService.getJwt(body);
-    // TODO: should automatically login if user has an acces or refresh token
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
-    return { access_token, refresh_token, accessTokenExpireTime };
+    return { access_token, refresh_token, access_token_expire_time };
   }
 
   @Get('profile/:id')
@@ -85,11 +89,11 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { access_token, refresh_token, accessTokenExpireTime } =
+    const { access_token, refresh_token, access_token_expire_time } =
       await this.authService.getJwt(req.user);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
-    return { access_token, refresh_token, accessTokenExpireTime };
+    return { access_token, refresh_token, access_token_expire_time };
   }
 }

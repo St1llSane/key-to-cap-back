@@ -49,7 +49,7 @@ export class AuthService {
           expiresIn: REFRESH_TOKEN_EXPIRE_TIME,
         },
       ),
-      accessTokenExpireTime: new Date().setTime(
+      access_token_expire_time: new Date().setTime(
         new Date().getTime() + ACCESS_TOKEN_EXPIRE_TIME * 1000,
       ),
     };
