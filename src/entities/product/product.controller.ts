@@ -44,9 +44,7 @@ export class ProductController {
 
   @Post()
   async createProduct(@Body() body: CreateProductDto) {
-    const newProduct = await this.productService.createProduct(body);
-
-    return newProduct;
+    return await this.productService.createProduct(body);
   }
 
   @Put(':id')
@@ -54,15 +52,11 @@ export class ProductController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProductDto,
   ) {
-    const updatedProduct = await this.productService.updateProduct(id, body);
-
-    return updatedProduct;
+    return await this.productService.updateProduct(id, body);
   }
 
   @Delete(':id')
   async deleteProduct(@Param('id', ParseIntPipe) id: number) {
-    const deletedProduct = await this.productService.deleteProduct(id);
-
-    return deletedProduct;
+    return await this.productService.deleteProduct(id);
   }
 }

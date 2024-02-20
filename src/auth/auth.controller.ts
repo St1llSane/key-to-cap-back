@@ -7,14 +7,16 @@ import {
   Req,
   Res,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/auth.local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import type { Request, Response } from 'express';
-import { CreateUserDto } from '@entities/user/dto/createUser.dto';
+import { AuthUserDto } from '@entities/user/dto/createUser.dto';
 import { UserService } from '@entities/user/user.service';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
+import { User } from '@entities/user/user.entity';
 
 @Controller()
 export class AuthController {
@@ -47,17 +49,18 @@ export class AuthController {
 
   @Post('auth/register')
   async createUser(
-    @Body() body: CreateUserDto,
+    @Body() body: AuthUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const newUserInfo = await this.userService.createUser(body);
+    const newUser = await this.userService.createUser(body);
+
     const { access_token, refresh_token, access_token_expire_time } =
-      await this.authService.getJwt(body);
+      await this.authService.getJwt(newUser);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
     return {
-      newUserInfo,
+      newUser,
       access_token,
       refresh_token,
       access_token_expire_time,
@@ -66,9 +69,14 @@ export class AuthController {
 
   @Post('auth/login')
   @UseGuards(LocalAuthGuard)
-  async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Body() body: AuthUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const user = await this.userService.findUserByEmail(body.email);
+
     const { access_token, refresh_token, access_token_expire_time } =
-      await this.authService.getJwt(body);
+      await this.authService.getJwt(user);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 
@@ -84,13 +92,14 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @HttpCode(200)
   @UseGuards(RefreshJwtAuthGuard)
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     const { access_token, refresh_token, access_token_expire_time } =
-      await this.authService.getJwt(req.user);
+      await this.authService.getJwt(req.user as User);
 
     this.setTokensToCookie(res, access_token, refresh_token);
 

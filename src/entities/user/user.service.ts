@@ -4,7 +4,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { genSalt, hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { CreateUserDto } from './dto/createUser.dto';
+import { AuthUserDto } from './dto/createUser.dto';
 import { UniqueEmailConflictError } from '@errors/UniqueEmailConflictError';
 import { NotFoundError } from '@errors/NotFoundError';
 
@@ -28,12 +28,12 @@ export class UserService {
       ],
     });
 
-    return { status: 'OK', users };
+    return users;
   }
 
   public async getUserById(id: string) {
     const user = await this.userRepository.findOne({
-      where: { id },
+      where: { id, isActive: true },
       select: [
         'id',
         'email',
@@ -42,28 +42,17 @@ export class UserService {
         'gender',
         'birthDate',
         'createdAt',
-        'isActive',
       ],
     });
 
-    if (!user || !user.isActive) {
+    if (!user) {
       throw new NotFoundError('User with this id was not found');
     }
 
-    const userInfoToReturn = {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      gender: user.gender,
-      birthDate: user.birthDate,
-      createdAt: user.createdAt,
-    };
-
-    return { status: 'OK', user: userInfoToReturn };
+    return user;
   }
 
-  public async createUser(body: CreateUserDto) {
+  public async createUser(body: AuthUserDto) {
     const isUserWithThisEmailAlreadyExist = await this.userRepository.exist({
       where: { email: body.email },
     });
@@ -81,17 +70,24 @@ export class UserService {
     });
     await this.userRepository.save(newUser);
 
-    const userInfoToReturn = {
+    // TODO: need to return all this data?
+    // const userDataToReturn = {
+    //   id: newUser.id,
+    //   email: newUser.email,
+    //   firstName: newUser.firstName,
+    //   lastName: newUser.lastName,
+    //   gender: newUser.gender,
+    //   birthDate: newUser.birthDate,
+    //   createdAt: newUser.createdAt,
+    // };
+
+    const userDataToReturn = {
       id: newUser.id,
       email: newUser.email,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      gender: newUser.gender,
-      birthDate: newUser.birthDate,
-      createdAt: newUser.createdAt,
+      password: newUser.password,
     };
 
-    return { status: 'CREATED', user: userInfoToReturn };
+    return userDataToReturn;
   }
 
   public async updateUser(id: string, body: UpdateUserDto) {
@@ -103,7 +99,7 @@ export class UserService {
       throw new NotFoundError('User with this id was not found');
     }
 
-    await this.userRepository.update(
+    return await this.userRepository.update(
       { id },
       {
         firstName: body.firstName,
@@ -112,22 +108,17 @@ export class UserService {
         birthDate: body.birthDate,
       },
     );
-
-    return { status: 'UPDATED' };
   }
 
   public async deleteUser(id: string) {
-    await this.userRepository.update(
+    return await this.userRepository.update(
       { id },
       {
         isActive: false,
       },
     );
-
-    return { status: 'DELETED' };
   }
 
-  // TODO: need to delete in the future
   async findUserByEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
 
@@ -135,6 +126,12 @@ export class UserService {
       throw new NotFoundError();
     }
 
-    return user;
+    const userDataToReturn = {
+      id: user.id,
+      email: user.email,
+      password: user.password,
+    };
+
+    return userDataToReturn;
   }
 }

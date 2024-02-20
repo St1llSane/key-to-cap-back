@@ -5,6 +5,7 @@ import { Product } from './product.entity';
 import { NotFoundError } from '@errors/NotFoundError';
 import { CreateProductDto } from './dto/createProductDto';
 import { DefaultConflictError } from '@errors/DefaultConflictError';
+import { ProductCategory, Products } from './types/types';
 
 @Injectable()
 export class ProductService {
@@ -37,14 +38,18 @@ export class ProductService {
       return acc;
     }, {});
 
-    const filteredProductsWithCorrectCategoriesNames = Object.keys(
-      filteredProducts,
-    ).reduce((acc, key) => {
-      const newCategoryName = this.categories[key];
-      acc[newCategoryName] = filteredProducts[key];
+    const filteredProductsWithCorrectCategoriesNames: Record<
+      ProductCategory,
+      Products
+    > = Object.keys(filteredProducts).reduce(
+      (acc, key) => {
+        const newCategoryName = this.categories[key];
+        acc[newCategoryName] = filteredProducts[key];
 
-      return acc;
-    }, {});
+        return acc;
+      },
+      {} as Record<ProductCategory, Products>,
+    );
 
     return filteredProductsWithCorrectCategoriesNames;
   }
@@ -86,7 +91,7 @@ export class ProductService {
       throw new NotFoundError('Product with this id was not found');
     }
 
-    await this.productRepository.update(
+    return await this.productRepository.update(
       { id },
       {
         name: body.name,
@@ -96,13 +101,9 @@ export class ProductService {
         categoryId: body.categoryId,
       },
     );
-
-    return { status: 'UPDATED' };
   }
 
   async deleteProduct(id: number) {
-    await this.productRepository.delete(id);
-
-    return { status: 'DELETED' };
+    return await this.productRepository.delete(id);
   }
 }

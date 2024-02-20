@@ -3,6 +3,7 @@ import { NotFoundError } from '@errors/NotFoundError';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
+import { User } from 'src/types/types';
 
 const ACCESS_TOKEN_EXPIRE_TIME = 15;
 const REFRESH_TOKEN_EXPIRE_TIME = 60 * 60 * 24;
@@ -25,7 +26,7 @@ export class AuthService {
     throw new NotFoundError();
   }
 
-  async getJwt(user: any) {
+  async getJwt(user: User) {
     const { id, email } = user;
 
     return {
