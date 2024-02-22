@@ -6,7 +6,7 @@ import { compare } from 'bcrypt';
 import { User } from 'src/types/types';
 
 const ACCESS_TOKEN_EXPIRE_TIME = 15;
-const REFRESH_TOKEN_EXPIRE_TIME = 60 * 60 * 24;
+const REFRESH_TOKEN_EXPIRE_TIME = 7;
 
 @Injectable()
 export class AuthService {
@@ -37,7 +37,7 @@ export class AuthService {
         },
         {
           secret: process.env.ACCESS_JWT_SECRET,
-          expiresIn: ACCESS_TOKEN_EXPIRE_TIME,
+          expiresIn: `${ACCESS_TOKEN_EXPIRE_TIME}m`,
         },
       ),
       refresh_token: await this.jwtService.signAsync(
@@ -47,11 +47,11 @@ export class AuthService {
         },
         {
           secret: process.env.REFRESH_JWT_SECRET,
-          expiresIn: REFRESH_TOKEN_EXPIRE_TIME,
+          expiresIn: `${REFRESH_TOKEN_EXPIRE_TIME}d`,
         },
       ),
       access_token_expire_time: new Date().setTime(
-        new Date().getTime() + ACCESS_TOKEN_EXPIRE_TIME * 1000,
+        new Date().getTime() + 60 * ACCESS_TOKEN_EXPIRE_TIME * 1000,
       ),
     };
   }
