@@ -37,7 +37,7 @@ export class AuthService {
         },
         {
           secret: process.env.ACCESS_JWT_SECRET,
-          expiresIn: `${ACCESS_TOKEN_EXPIRE_TIME}m`,
+          expiresIn: `${ACCESS_TOKEN_EXPIRE_TIME}s`,
         },
       ),
       refresh_token: await this.jwtService.signAsync(
@@ -49,9 +49,6 @@ export class AuthService {
           secret: process.env.REFRESH_JWT_SECRET,
           expiresIn: `${REFRESH_TOKEN_EXPIRE_TIME}d`,
         },
-      ),
-      access_token_expire_time: new Date().setTime(
-        new Date().getTime() + 60 * ACCESS_TOKEN_EXPIRE_TIME * 1000,
       ),
     };
   }
