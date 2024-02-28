@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RefreshJwtStrategy } from './strategies/refreshJwt.strategy';
+import { TokensStringValues } from 'src/types/enums';
 
 @Module({
   imports: [
@@ -17,7 +18,9 @@ import { RefreshJwtStrategy } from './strategies/refreshJwt.strategy';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('ACCESS_JWT_SECRET'),
-        signOptions: { expiresIn: '15m' },
+        signOptions: {
+          expiresIn: TokensStringValues.ACCESS_TOKEN_EXPIRE_TIME_MINUTES,
+        },
       }),
       inject: [ConfigService],
     }),

@@ -14,6 +14,7 @@ import { AuthUserDto } from '@entities/user/dto/createUser.dto';
 import { UserService } from '@entities/user/user.service';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 import { User } from '@entities/user/user.entity';
+import { TokensMilliseconds } from 'src/types/enums';
 
 @Controller()
 export class AuthController {
@@ -51,7 +52,10 @@ export class AuthController {
   ) {
     const user = await this.userService.findUserByEmail(body.email);
 
-    const { access_token, refresh_token } = await this.authService.getJwt(user);
+    const { access_token, refresh_token } = await this.authService.getJwt({
+      id: user.id,
+      email: user.email,
+    });
 
     this.setCookie(res, access_token, refresh_token);
 
@@ -94,11 +98,16 @@ export class AuthController {
       httpOnly: true,
       expires: isReset
         ? new Date(Date.now())
-        : new Date(Date.now() + 60 * 15 * 1000),
+        : new Date(
+            Date.now() +
+              TokensMilliseconds.ACCESS_TOKEN_EXPIRE_TIME_MILLISECONDS,
+          ),
       // expires: isReset
       //   ? new Date(Date.now())
       //   : new Date(Date.now() + 15 * 1000),
-      maxAge: isReset ? 0 : 60 * 15 * 1000,
+      maxAge: isReset
+        ? 0
+        : TokensMilliseconds.ACCESS_TOKEN_EXPIRE_TIME_MILLISECONDS,
     });
 
     res.cookie('refresh_token', refresh_token, {
@@ -107,8 +116,13 @@ export class AuthController {
       httpOnly: true,
       expires: isReset
         ? new Date(Date.now())
-        : new Date(Date.now() + 60 * 60 * 24 * 7 * 1000),
-      maxAge: isReset ? 0 : 60 * 60 * 24 * 7 * 1000,
+        : new Date(
+            Date.now() +
+              TokensMilliseconds.REFRESH_TOKEN_EXPIRE_TIME_MILLISECONDS,
+          ),
+      maxAge: isReset
+        ? 0
+        : TokensMilliseconds.REFRESH_TOKEN_EXPIRE_TIME_MILLISECONDS,
     });
   };
 }

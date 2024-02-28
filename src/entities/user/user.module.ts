@@ -5,6 +5,8 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtStrategy } from '@auth/strategies/jwt.strategy';
+import { TokensStringValues } from 'src/types/enums';
 
 @Module({
   imports: [
@@ -13,13 +15,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('ACCESS_JWT_SECRET'),
-        signOptions: { expiresIn: '15m' },
+        signOptions: {
+          expiresIn: TokensStringValues.ACCESS_TOKEN_EXPIRE_TIME_MINUTES,
+        },
       }),
       inject: [ConfigService],
     }),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, JwtStrategy],
   exports: [UserService],
 })
 export class UserModule {}

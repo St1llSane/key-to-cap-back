@@ -1,0 +1,8 @@
+export enum TokensMilliseconds {
+  ACCESS_TOKEN_EXPIRE_TIME_MILLISECONDS = 60 * 15 * 1000,
+  REFRESH_TOKEN_EXPIRE_TIME_MILLISECONDS = 60 * 60 * 24 * 7 * 1000,
+}
+export enum TokensStringValues {
+  ACCESS_TOKEN_EXPIRE_TIME_MINUTES = '15m',
+  REFRESH_TOKEN_EXPIRE_TIME_DAYS = '7d',
+}

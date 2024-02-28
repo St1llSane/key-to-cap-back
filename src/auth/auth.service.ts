@@ -3,10 +3,7 @@ import { NotFoundError } from '@errors/NotFoundError';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
-import { User } from 'src/types/types';
-
-const ACCESS_TOKEN_EXPIRE_TIME = 15;
-const REFRESH_TOKEN_EXPIRE_TIME = 7;
+import { TokensStringValues } from 'src/types/enums';
 
 @Injectable()
 export class AuthService {
@@ -26,9 +23,7 @@ export class AuthService {
     throw new NotFoundError();
   }
 
-  async getJwt(user: User) {
-    const { id, email } = user;
-
+  async getJwt({ id, email }: { id: string; email: string }) {
     return {
       access_token: await this.jwtService.signAsync(
         {
@@ -37,7 +32,7 @@ export class AuthService {
         },
         {
           secret: process.env.ACCESS_JWT_SECRET,
-          expiresIn: `${ACCESS_TOKEN_EXPIRE_TIME}s`,
+          expiresIn: TokensStringValues.ACCESS_TOKEN_EXPIRE_TIME_MINUTES,
         },
       ),
       refresh_token: await this.jwtService.signAsync(
@@ -47,7 +42,7 @@ export class AuthService {
         },
         {
           secret: process.env.REFRESH_JWT_SECRET,
-          expiresIn: `${REFRESH_TOKEN_EXPIRE_TIME}d`,
+          expiresIn: TokensStringValues.REFRESH_TOKEN_EXPIRE_TIME_DAYS,
         },
       ),
     };
