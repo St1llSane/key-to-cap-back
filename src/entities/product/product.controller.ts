@@ -3,18 +3,17 @@ import {
   Get,
   Post,
   Body,
-  Put,
   Param,
   Delete,
   ParseIntPipe,
   Query,
-  UseGuards,
+  HttpCode,
+  Patch,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/createProductDto';
 import { UpdateProductDto } from './dto/updateProductDto';
-import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 
 @Controller('products')
 @ApiTags('products')
@@ -28,7 +27,7 @@ export class ProductController {
     description: 'Optional limit param',
     required: false,
   })
-  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
   async getAllProducts(@Query('limit') limit?: number) {
     const products = await this.productService.getAllProducts(limit);
 
@@ -36,6 +35,7 @@ export class ProductController {
   }
 
   @Get(':id')
+  @HttpCode(200)
   async getProduct(@Param('id', ParseIntPipe) id: number) {
     const product = await this.productService.getProduct(id);
 
@@ -43,11 +43,13 @@ export class ProductController {
   }
 
   @Post()
+  @HttpCode(201)
   async createProduct(@Body() body: CreateProductDto) {
     return await this.productService.createProduct(body);
   }
 
-  @Put(':id')
+  @Patch(':id')
+  @HttpCode(200)
   async updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProductDto,
@@ -56,6 +58,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return await this.productService.deleteProduct(id);
   }

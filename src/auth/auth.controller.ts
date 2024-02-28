@@ -1,8 +1,6 @@
 import {
   Body,
   Controller,
-  // Get,
-  // Param,
   Post,
   Req,
   Res,
@@ -11,13 +9,11 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/auth.local-auth.guard';
-// import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import type { Request, Response } from 'express';
 import { AuthUserDto } from '@entities/user/dto/createUser.dto';
 import { UserService } from '@entities/user/user.service';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 import { User } from '@entities/user/user.entity';
-import { Cookies } from 'src/utils/extractCookies';
 
 @Controller()
 export class AuthController {
@@ -27,6 +23,7 @@ export class AuthController {
   ) {}
 
   @Post('auth/sign-up')
+  @HttpCode(201)
   async createUser(
     @Body() body: AuthUserDto,
     @Res({ passthrough: true }) res: Response,
@@ -46,6 +43,7 @@ export class AuthController {
   }
 
   @Post('auth/sign-in')
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   async signIn(
     @Body() body: AuthUserDto,
@@ -62,20 +60,11 @@ export class AuthController {
 
   @Post('sign-out')
   @HttpCode(200)
-  // @UseGuards(LocalAuthGuard)
   async signOut(@Res({ passthrough: true }) res: Response) {
     this.setCookie(res, '', '', true);
 
     return { status: '200' };
   }
-
-  // @Get('profile/:id')
-  // @UseGuards(JwtAuthGuard)
-  // async getProfile(@Param('id') id: string) {
-  //   const user = this.userService.findUserByEmail(id);
-
-  //   return user;
-  // }
 
   @Post('refresh')
   @HttpCode(200)
@@ -93,15 +82,6 @@ export class AuthController {
     return { access_token, refresh_token };
   }
 
-  @Post('is-auth')
-  @HttpCode(200)
-  async isUserAuth(@Cookies('refresh_token') cookies: string) {
-    const isUserAuth = !!cookies;
-    console.log('🚀 ~ AuthController ~ isUserAuth ~ cookies:', cookies);
-
-    return isUserAuth;
-  }
-
   private setCookie = (
     res: Response,
     access_token: string,
@@ -112,13 +92,13 @@ export class AuthController {
       // TODO: need to secure in the future
       secure: false,
       httpOnly: true,
-      // expires: isReset
-      //   ? new Date(Date.now())
-      //   : new Date(Date.now() + 60 * 15 * 1000),
       expires: isReset
         ? new Date(Date.now())
-        : new Date(Date.now() + 15 * 1000),
-      // maxAge: isReset ? 0 : 60 * 15 * 1000,
+        : new Date(Date.now() + 60 * 15 * 1000),
+      // expires: isReset
+      //   ? new Date(Date.now())
+      //   : new Date(Date.now() + 15 * 1000),
+      maxAge: isReset ? 0 : 60 * 15 * 1000,
     });
 
     res.cookie('refresh_token', refresh_token, {
@@ -128,7 +108,7 @@ export class AuthController {
       expires: isReset
         ? new Date(Date.now())
         : new Date(Date.now() + 60 * 60 * 24 * 7 * 1000),
-      // maxAge: isReset ? 0 : 60 * 60 * 24 * 7 * 1000,
+      maxAge: isReset ? 0 : 60 * 60 * 24 * 7 * 1000,
     });
   };
 }
