@@ -14,7 +14,7 @@ import { AuthUserDto } from '@entities/user/dto/createUser.dto';
 import { UserService } from '@entities/user/user.service';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 import { User } from '@entities/user/user.entity';
-import { TokensMilliseconds } from 'src/types/enums';
+import { TokensMilliseconds } from 'src/shared/types/enums';
 
 @Controller()
 export class AuthController {

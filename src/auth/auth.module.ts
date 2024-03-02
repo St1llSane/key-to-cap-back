@@ -8,7 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RefreshJwtStrategy } from './strategies/refreshJwt.strategy';
-import { TokensStringValues } from 'src/types/enums';
+import { TokensStringValues } from 'src/shared/types/enums';
 
 @Module({
   imports: [

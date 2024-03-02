@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-import { NotFoundError } from '@errors/NotFoundError';
+import { NotFoundError } from 'src/shared/errors/NotFoundError';
 import { CreateProductDto } from './dto/createProductDto';
-import { DefaultConflictError } from '@errors/DefaultConflictError';
+import { DefaultConflictError } from 'src/shared/errors/DefaultConflictError';
 import { GetAllProductsParams, Products } from './types/types';
 
 @Injectable()

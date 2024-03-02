@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import { genSalt, hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { AuthUserDto } from './dto/createUser.dto';
-import { UniqueEmailConflictError } from '@errors/UniqueEmailConflictError';
-import { NotFoundError } from '@errors/NotFoundError';
+import { UniqueEmailConflictError } from 'src/shared/errors/UniqueEmailConflictError';
+import { NotFoundError } from 'src/shared/errors/NotFoundError';
 
 @Injectable()
 export class UserService {

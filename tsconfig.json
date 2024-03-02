@@ -20,7 +20,7 @@
     "paths": {
       "@entities/*": ["src/entities/*"],
       "@db/*": ["src/db/*"],
-      "@errors/*": ["src/errors/*"],
+      "@errors/*": ["src/shared/errors/*"],
       "@auth/*": ["src/auth/*"]
     }
   }

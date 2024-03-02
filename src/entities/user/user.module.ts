@@ -6,7 +6,7 @@ import { UserService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '@auth/strategies/jwt.strategy';
-import { TokensStringValues } from 'src/types/enums';
+import { TokensStringValues } from 'src/shared/types/enums';
 
 @Module({
   imports: [

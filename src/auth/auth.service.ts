@@ -1,9 +1,9 @@
 import { UserService } from '@entities/user/user.service';
-import { NotFoundError } from '@errors/NotFoundError';
+import { NotFoundError } from 'src/shared/errors/NotFoundError';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
-import { TokensStringValues } from 'src/types/enums';
+import { TokensStringValues } from 'src/shared/types/enums';
 
 @Injectable()
 export class AuthService {
