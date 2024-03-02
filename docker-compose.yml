@@ -1,9 +1,9 @@
-version: '3.5'
+version: '3.9'
 
 services:
   key_to_cap_postgres:
     container_name: key_to_cap_postgres
-    image: postgres:14
+    image: postgres:16.2
     environment:
       POSTGRES_USER: key_to_cap
       POSTGRES_PASSWORD: key_to_cap
@@ -16,25 +16,9 @@ services:
       - key_to_cap
     restart: unless-stopped
 
-  key_to_cap_pgadmin:
-    container_name: key_to_cap_pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: key_to_cap@admin.com
-      PGADMIN_DEFAULT_PASSWORD: key_to_cap
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/var/www/key_to_cap/docker-volumes/pgadmin
-    ports:
-      - 127.0.0.1:5050:80
-    networks:
-      - key_to_cap
-    restart: unless-stopped
-
 networks:
   key_to_cap:
     driver: bridge
 
 volumes:
   postgres:
-  pgadmin:

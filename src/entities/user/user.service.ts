@@ -25,6 +25,7 @@ export class UserService {
         'gender',
         'birthDate',
         'createdAt',
+        'updatedAt',
       ],
     });
 
@@ -42,6 +43,7 @@ export class UserService {
         'gender',
         'birthDate',
         'createdAt',
+        'updatedAt',
       ],
     });
 
@@ -69,17 +71,6 @@ export class UserService {
       password: hashedPassword,
     });
     await this.userRepository.save(newUser);
-
-    // TODO: need to return all this data?
-    // const userDataToReturn = {
-    //   id: newUser.id,
-    //   email: newUser.email,
-    //   firstName: newUser.firstName,
-    //   lastName: newUser.lastName,
-    //   gender: newUser.gender,
-    //   birthDate: newUser.birthDate,
-    //   createdAt: newUser.createdAt,
-    // };
 
     const userDataToReturn = {
       id: newUser.id,

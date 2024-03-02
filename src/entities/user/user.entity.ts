@@ -37,4 +37,7 @@ export class User {
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
+
+  @CreateDateColumn({ name: 'updated_at', type: 'timestamp', nullable: true })
+  updatedAt: Date;
 }

@@ -19,10 +19,10 @@ import { UserRequestGet } from 'src/types/types';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('profile')
+  @Get('user')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get user profile info' })
-  async getProfile(@Req() req: UserRequestGet) {
+  @ApiOperation({ summary: 'Get user info' })
+  async getUser(@Req() req: UserRequestGet) {
     const user = await this.userService.getUserById(req.user.id);
 
     return user;

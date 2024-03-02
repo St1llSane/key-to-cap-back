@@ -14,6 +14,7 @@ import { ProductService } from './product.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/createProductDto';
 import { UpdateProductDto } from './dto/updateProductDto';
+import { GetAllProductsParams } from './types/types';
 
 @Controller('products')
 @ApiTags('products')
@@ -28,8 +29,8 @@ export class ProductController {
     required: false,
   })
   @HttpCode(200)
-  async getAllProducts(@Query('limit') limit?: number) {
-    const products = await this.productService.getAllProducts(limit);
+  async getAllProducts(@Query() params: GetAllProductsParams) {
+    const products = await this.productService.getAllProducts(params);
 
     return products;
   }

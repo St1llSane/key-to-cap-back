@@ -5,7 +5,7 @@ import { Product } from './product.entity';
 import { NotFoundError } from '@errors/NotFoundError';
 import { CreateProductDto } from './dto/createProductDto';
 import { DefaultConflictError } from '@errors/DefaultConflictError';
-import { ProductCategory, Products } from './types/types';
+import { GetAllProductsParams, Products } from './types/types';
 
 @Injectable()
 export class ProductService {
@@ -21,9 +21,9 @@ export class ProductService {
     4: 'Keycaps',
   };
 
-  async getAllProducts(limit?: number) {
+  async getAllProducts(params?: GetAllProductsParams) {
     const products = await this.productRepository.find({
-      take: limit,
+      take: params.limit,
       order: { id: { direction: 'asc' } },
       select: ['id', 'name', 'description', 'price', 'quantity', 'categoryId'],
     });
@@ -38,18 +38,14 @@ export class ProductService {
       return acc;
     }, {});
 
-    const filteredProductsWithCorrectCategoriesNames: Record<
-      ProductCategory,
-      Products
-    > = Object.keys(filteredProducts).reduce(
-      (acc, key) => {
-        const newCategoryName = this.categories[key];
-        acc[newCategoryName] = filteredProducts[key];
+    const filteredProductsWithCorrectCategoriesNames: Products = Object.keys(
+      filteredProducts,
+    ).reduce((acc, key) => {
+      const newCategoryName = this.categories[key];
+      acc[newCategoryName] = filteredProducts[key];
 
-        return acc;
-      },
-      {} as Record<ProductCategory, Products>,
-    );
+      return acc;
+    }, {} as Products);
 
     return filteredProductsWithCorrectCategoriesNames;
   }
